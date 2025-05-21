@@ -1,5 +1,5 @@
 [build]  
-  command = "cd types && yarn && cd ../client && yarn && yarn build"
+  command = "cd client && yarn && yarn build && cd ../types && yarn && cd ../server && tsc --project tsconfig.server.json"
   publish = "client/dist"
 
 # Rule for router history mode

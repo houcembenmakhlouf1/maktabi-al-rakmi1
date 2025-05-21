@@ -4,6 +4,7 @@ import cors from 'cors'
 import { Server, LobbyRoom } from 'colyseus'
 import { monitor } from '@colyseus/monitor'
 import { RoomType } from '../types/Rooms'
+import path from 'path'
 
 // import socialRoutes from "@colyseus/social/express"
 
@@ -14,7 +15,9 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
-// app.use(express.static('dist'))
+
+// Serve static files from the client/dist directory
+app.use(express.static(path.join(__dirname, '../client/dist')))
 
 const server = http.createServer(app)
 const gameServer = new Server({
@@ -41,6 +44,11 @@ gameServer.define(RoomType.CUSTOM, SkyOffice).enableRealtimeListing()
 
 // register colyseus monitor AFTER registering your room handlers
 app.use('/colyseus', monitor())
+
+// Catch all routes and serve index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'))
+})
 
 gameServer.listen(port)
 console.log(`Listening on ws://localhost:${port}`)
